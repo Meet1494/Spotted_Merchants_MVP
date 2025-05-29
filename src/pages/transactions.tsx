@@ -25,6 +25,8 @@ import { format, isToday, isThisWeek, isThisMonth } from 'date-fns';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import type { ChipProps } from '@mui/material/Chip';
+import type { ReactElement } from 'react';
 
 interface Transaction {
   id: string;
@@ -40,7 +42,11 @@ interface Transaction {
   status: 'settled_consumer' | 'on_hold' | 'settled_merchant';
 }
 
-const statusChips = {
+const statusChips: Record<Transaction['status'], {
+  label: string;
+  color: ChipProps['color'];
+  icon: ReactElement;
+}> = {
   settled_consumer: { label: 'Settled to consumer', color: 'success', icon: <CheckCircleIcon fontSize="small" /> },
   on_hold: { label: 'On Hold', color: 'warning', icon: <WarningAmberIcon fontSize="small" /> },
   settled_merchant: { label: 'Settled to merchant', color: 'info', icon: <LocalShippingIcon fontSize="small" /> },

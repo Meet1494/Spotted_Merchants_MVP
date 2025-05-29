@@ -139,8 +139,8 @@ const FeedPost = ({ post }: { post: Post }) => {
           {/* Images */}
           {Array.isArray(post.image) ? (
             <Grid container spacing={1} sx={{ mb: 1 }}>
-              {post.image.map((img, idx) => (
-                <Grid item xs={6} key={idx}>
+              {post.image.map((img, i) => (
+                <Grid item xs={6} key={i}>
                   <CardMedia
                     component="img"
                     height="110"
@@ -214,7 +214,7 @@ const FeedPost = ({ post }: { post: Post }) => {
 export default function Feed() {
   const theme = useTheme();
   const [tab, setTab] = useState(0);
-  const [posts, setPosts] = useState<Post[]>(mockPosts);
+  const [posts] = useState<Post[]>(mockPosts);
 
   // Simple filter for demonstration
   const filteredPosts = posts.sort((a, b) => {
@@ -253,7 +253,7 @@ export default function Feed() {
               },
             }}
           >
-            {TABS.map((tabObj, idx) => <Tab key={tabObj.label} label={tabObj.label} />)}
+            {TABS.map((tabObj) => <Tab key={tabObj.label} label={tabObj.label} />)}
           </Tabs>
 
           <Box>

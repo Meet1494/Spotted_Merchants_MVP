@@ -4,8 +4,6 @@ import {
   Card,
   CardContent,
   Divider,
-  FormControlLabel,
-  Grid,
   IconButton,
   List,
   ListItem,
@@ -22,7 +20,6 @@ import {
   DialogActions,
   Chip,
   Avatar,
-  Menu,
   MenuItem,
 } from '@mui/material';
 import { MerchantLayout } from '@/components/layout/MerchantLayout';
@@ -30,11 +27,9 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import SecurityIcon from '@mui/icons-material/Security';
 import PaymentIcon from '@mui/icons-material/Payment';
 import LanguageIcon from '@mui/icons-material/Language';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
 import HelpIcon from '@mui/icons-material/Help';
 import LogoutIcon from '@mui/icons-material/Logout';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import AddIcon from '@mui/icons-material/Add';
@@ -47,228 +42,6 @@ interface SettingSection {
   icon: React.ReactNode;
   content: React.ReactNode;
 }
-
-const NotificationSettings = () => {
-  const [settings, setSettings] = useState({
-    salesAlerts: true,
-    customerAlerts: true,
-    offerAlerts: true,
-    socialAlerts: true,
-    emailDigest: false,
-    pushNotifications: true,
-  });
-
-  const handleToggle = (setting: keyof typeof settings) => {
-    setSettings((prev) => ({
-      ...prev,
-      [setting]: !prev[setting],
-    }));
-  };
-
-  return (
-    <List>
-      <ListItem>
-        <ListItemText
-          primary="Sales Alerts"
-          secondary="Get notified about significant changes in sales"
-        />
-        <Switch
-          checked={settings.salesAlerts}
-          onChange={() => handleToggle('salesAlerts')}
-        />
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="Customer Alerts"
-          secondary="Notifications about loyal customers and new visitors"
-        />
-        <Switch
-          checked={settings.customerAlerts}
-          onChange={() => handleToggle('customerAlerts')}
-        />
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="Offer Alerts"
-          secondary="Updates about offer performance and expiring deals"
-        />
-        <Switch
-          checked={settings.offerAlerts}
-          onChange={() => handleToggle('offerAlerts')}
-        />
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="Social Alerts"
-          secondary="Notifications about viral posts and mentions"
-        />
-        <Switch
-          checked={settings.socialAlerts}
-          onChange={() => handleToggle('socialAlerts')}
-        />
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="Daily Email Digest"
-          secondary="Receive a daily summary of your business performance"
-        />
-        <Switch
-          checked={settings.emailDigest}
-          onChange={() => handleToggle('emailDigest')}
-        />
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="Push Notifications"
-          secondary="Enable push notifications on your device"
-        />
-        <Switch
-          checked={settings.pushNotifications}
-          onChange={() => handleToggle('pushNotifications')}
-        />
-      </ListItem>
-    </List>
-  );
-};
-
-const SecuritySettings = () => {
-  const [settings, setSettings] = useState({
-    twoFactorAuth: false,
-    biometricLogin: true,
-    sessionTimeout: '30',
-  });
-
-  return (
-    <List>
-      <ListItem>
-        <ListItemText
-          primary="Two-Factor Authentication"
-          secondary="Add an extra layer of security to your account"
-        />
-        <Switch
-          checked={settings.twoFactorAuth}
-          onChange={(e) =>
-            setSettings((prev) => ({
-              ...prev,
-              twoFactorAuth: e.target.checked,
-            }))
-          }
-        />
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="Biometric Login"
-          secondary="Use fingerprint or face ID to log in"
-        />
-        <Switch
-          checked={settings.biometricLogin}
-          onChange={(e) =>
-            setSettings((prev) => ({
-              ...prev,
-              biometricLogin: e.target.checked,
-            }))
-          }
-        />
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="Session Timeout"
-          secondary="Automatically log out after inactivity (minutes)"
-        />
-        <TextField
-          type="number"
-          value={settings.sessionTimeout}
-          onChange={(e) =>
-            setSettings((prev) => ({
-              ...prev,
-              sessionTimeout: e.target.value,
-            }))
-          }
-          size="small"
-          sx={{ width: 100 }}
-        />
-      </ListItem>
-    </List>
-  );
-};
-
-const PaymentSettings = () => {
-  const [settings, setSettings] = useState({
-    autoSettlement: true,
-    settlementFrequency: 'daily',
-    bankAccount: '****4321',
-  });
-
-  return (
-    <List>
-      <ListItem>
-        <ListItemText
-          primary="Auto Settlement"
-          secondary="Automatically transfer earnings to your bank account"
-        />
-        <Switch
-          checked={settings.autoSettlement}
-          onChange={(e) =>
-            setSettings((prev) => ({
-              ...prev,
-              autoSettlement: e.target.checked,
-            }))
-          }
-        />
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="Settlement Frequency"
-          secondary="How often to transfer your earnings"
-        />
-        <TextField
-          select
-          value={settings.settlementFrequency}
-          onChange={(e) =>
-            setSettings((prev) => ({
-              ...prev,
-              settlementFrequency: e.target.value,
-            }))
-          }
-          size="small"
-          sx={{ width: 120 }}
-          SelectProps={{
-            native: true,
-          }}
-        >
-          <option value="daily">Daily</option>
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
-        </TextField>
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="Bank Account"
-          secondary="Linked bank account for settlements"
-        />
-        <Typography variant="body2">{settings.bankAccount}</Typography>
-      </ListItem>
-    </List>
-  );
-};
-
-const PreferenceSettings = () => {
-  const { mode, toggleMode } = useThemeMode();
-  return (
-    <List>
-      <ListItem>
-        <ListItemText
-          primary="Dark Mode"
-          secondary="Switch between light and dark theme"
-        />
-        <Switch
-          checked={mode === 'dark'}
-          onChange={toggleMode}
-        />
-      </ListItem>
-    </List>
-  );
-};
 
 const SettingSection = ({ title, icon, content }: SettingSection) => {
   return (
@@ -445,7 +218,7 @@ const EnhancedSecuritySettings = () => {
         <DialogTitle>Logout from all devices?</DialogTitle>
         <DialogContent>
           <Typography>
-            This will log you out from all devices where you're currently signed in. Are you sure?
+            This will log you out from all devices where you&apos;re currently signed in. Are you sure?
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -613,7 +386,7 @@ const EnhancedNotificationSettings = () => {
         </ListItemIcon>
         <ListItemText
           primary="SMS"
-          secondary="Only when other options don't work"
+          secondary="Only when other options don&apos;t work"
         />
         <Switch
           checked={settings.sms}
@@ -756,7 +529,7 @@ const WhatsAppReportSettings = () => {
               📊 Daily Business Report
             </Typography>
             <Typography variant="body2" color="text.secondary" paragraph>
-              Here's your business performance for today:
+              Here&apos;s your business performance for today:
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Typography>💰 Total Sales: ₹45,678</Typography>
@@ -868,6 +641,84 @@ const AccountSettings = () => {
           </Button>
         </DialogActions>
       </Dialog>
+    </List>
+  );
+};
+
+const PreferenceSettings = () => {
+  const { mode, toggleMode } = useThemeMode();
+  return (
+    <List>
+      <ListItem>
+        <ListItemText
+          primary="Dark Mode"
+          secondary="Switch between light and dark theme"
+        />
+        <Switch
+          checked={mode === 'dark'}
+          onChange={toggleMode}
+        />
+      </ListItem>
+    </List>
+  );
+};
+
+const PaymentSettings = () => {
+  const [settings, setSettings] = useState({
+    autoSettlement: true,
+    settlementFrequency: 'daily',
+    bankAccount: '****4321',
+  });
+
+  return (
+    <List>
+      <ListItem>
+        <ListItemText
+          primary="Auto Settlement"
+          secondary="Automatically transfer earnings to your bank account"
+        />
+        <Switch
+          checked={settings.autoSettlement}
+          onChange={(e) =>
+            setSettings((prev) => ({
+              ...prev,
+              autoSettlement: e.target.checked,
+            }))
+          }
+        />
+      </ListItem>
+      <ListItem>
+        <ListItemText
+          primary="Settlement Frequency"
+          secondary="How often to transfer your earnings"
+        />
+        <TextField
+          select
+          value={settings.settlementFrequency}
+          onChange={(e) =>
+            setSettings((prev) => ({
+              ...prev,
+              settlementFrequency: e.target.value,
+            }))
+          }
+          size="small"
+          sx={{ width: 120 }}
+          SelectProps={{
+            native: true,
+          }}
+        >
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </TextField>
+      </ListItem>
+      <ListItem>
+        <ListItemText
+          primary="Bank Account"
+          secondary="Linked bank account for settlements"
+        />
+        <Typography variant="body2">{settings.bankAccount}</Typography>
+      </ListItem>
     </List>
   );
 };

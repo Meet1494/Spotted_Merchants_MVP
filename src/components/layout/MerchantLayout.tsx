@@ -9,7 +9,6 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
-  Typography,
   useTheme,
   useMediaQuery,
 } from '@mui/material';
@@ -22,10 +21,10 @@ import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import InsightsIcon from '@mui/icons-material/Insights';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
-import StorefrontIcon from '@mui/icons-material/Storefront';
 import { useRouter } from 'next/router';
 import { NAVIGATION_ROUTES } from '@/config/routes';
 import { useNavigation } from '@/hooks/useNavigation';
+import Image from 'next/image';
 
 const iconMap: { [key: string]: React.ReactNode } = {
   HomeIcon: <HomeIcon />,
@@ -44,6 +43,7 @@ interface MerchantLayoutProps {
 
 export const MerchantLayout: React.FC<MerchantLayoutProps> = ({ children }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const theme = useTheme();
   const router = useRouter();
   const { navigate } = useNavigation();
@@ -51,6 +51,10 @@ export const MerchantLayout: React.FC<MerchantLayoutProps> = ({ children }) => {
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
+  };
+
+  const handleCollapseToggle = () => {
+    setCollapsed((prev) => !prev);
   };
 
   const handleNavigation = (path: string) => {
@@ -88,10 +92,13 @@ export const MerchantLayout: React.FC<MerchantLayoutProps> = ({ children }) => {
             <MenuIcon />
           </IconButton>
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
-            <img
+            <Image
               src="/spotted-logo.png"
               alt="Spotted logo"
-              style={{ height: 38, maxWidth: '160px', objectFit: 'contain', display: 'block' }}
+              height={38}
+              width={160}
+              style={{ objectFit: 'contain', display: 'block', height: 38, maxWidth: 160 }}
+              priority
             />
           </Box>
         </Toolbar>
@@ -110,20 +117,41 @@ export const MerchantLayout: React.FC<MerchantLayoutProps> = ({ children }) => {
           display: { xs: 'block' },
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
-            width: { xs: '80vw', sm: 220, md: 260 },
+            width: collapsed ? 60 : { xs: '80vw', sm: 220, md: 260 },
+            transition: 'width 0.2s',
             background: '#f7f8fa',
             pt: 7,
+            overflowX: 'hidden',
           },
         }}
       >
         <Box
           sx={{
-            width: { xs: '80vw', sm: 220, md: 260 },
+            width: collapsed ? 60 : { xs: '80vw', sm: 220, md: 260 },
             background: '#f7f8fa',
             height: '100%',
             pt: 0,
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
+          {/* Collapse button at the top, only on desktop */}
+          {isDesktop && (
+            <IconButton
+              onClick={handleCollapseToggle}
+              sx={{
+                alignSelf: 'flex-end',
+                mb: 1,
+                mt: 1,
+                mr: 1,
+                transition: 'transform 0.2s',
+              }}
+              size="small"
+              aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
           <List>
             {NAVIGATION_ROUTES.map((route) => (
               <ListItem
@@ -140,29 +168,34 @@ export const MerchantLayout: React.FC<MerchantLayoutProps> = ({ children }) => {
                   color: router.pathname === route.path ? theme.palette.primary.main : theme.palette.text.primary,
                   transition: 'background 0.2s',
                   minHeight: { xs: 44, md: 48 },
+                  justifyContent: collapsed ? 'center' : 'flex-start',
                   '&:hover': {
                     background: '#ececec',
                     color: theme.palette.primary.main,
                   },
+                  px: collapsed ? 1 : 2,
                 }}
               >
                 <ListItemIcon
                   sx={{
                     color: router.pathname === route.path ? theme.palette.primary.main : theme.palette.text.secondary,
                     minWidth: 36,
-                    mr: 1,
+                    mr: collapsed ? 0 : 1,
+                    justifyContent: 'center',
                   }}
                 >
                   {iconMap[route.icon]}
                 </ListItemIcon>
-                <ListItemText
-                  primary={route.label}
-                  primaryTypographyProps={{
-                    fontWeight: router.pathname === route.path ? 700 : 400,
-                    fontSize: { xs: 14, md: 15 },
-                    fontFamily: 'Outfit, sans-serif',
-                  }}
-                />
+                {!collapsed && (
+                  <ListItemText
+                    primary={route.label}
+                    primaryTypographyProps={{
+                      fontWeight: router.pathname === route.path ? 700 : 400,
+                      fontSize: { xs: 14, md: 15 },
+                      fontFamily: 'Outfit, sans-serif',
+                    }}
+                  />
+                )}
               </ListItem>
             ))}
           </List>
@@ -178,7 +211,7 @@ export const MerchantLayout: React.FC<MerchantLayoutProps> = ({ children }) => {
           backgroundColor: '#f5f5f5',
           minHeight: '100vh',
           pt: 8,
-          ml: { md: isDesktop ? '260px' : 0 },
+          ml: { md: isDesktop ? (collapsed ? '60px' : '260px') : 0 },
         }}
       >
         {children}

@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import { NAVIGATION_ROUTES } from '@/config/routes';
 
 export const useNavigation = () => {
   const router = useRouter();

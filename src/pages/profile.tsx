@@ -15,15 +15,11 @@ import {
   MenuItem,
   TextField,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CallIcon from '@mui/icons-material/Call';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { motion } from 'framer-motion';
-import { useNavigation } from '@/hooks/useNavigation';
 import { MerchantLayout } from '@/components/layout/MerchantLayout';
 
 const offers = [
@@ -53,12 +49,6 @@ export default function Profile() {
     phone: '+91 98765 43210',
   });
   const [editProfile, setEditProfile] = useState(profile);
-  const { navigate } = useNavigation();
-  // For side panel, we use MerchantLayout's drawer logic, so we trigger a custom event
-  const openDrawer = () => {
-    const event = new CustomEvent('open-merchant-drawer');
-    window.dispatchEvent(event);
-  };
   // More menu handlers
   const handleMenuOpen = (e: React.MouseEvent<HTMLElement>) => setAnchorEl(e.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
@@ -263,7 +253,7 @@ export default function Profile() {
               }}
             >
               <Tab label={<span>Just Spotted <span role="img" aria-label="">😍</span></span>} />
-              <Tab label={<span>What's New <span role="img" aria-label="">😍</span></span>} />
+              <Tab label={<span>What&apos;s New <span role="img" aria-label="">😍</span></span>} />
               <Tab label="Menu" />
             </Tabs>
           </Box>

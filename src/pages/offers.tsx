@@ -12,11 +12,9 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
-  Grid,
   IconButton,
   Radio,
   RadioGroup,
-  Slider,
   Switch,
   TextField,
   Typography,
@@ -251,7 +249,7 @@ export default function Offers() {
                 AI Offer Assistant
               </Typography>
               <Typography variant="body1" sx={{ mb: 3, fontSize: 16 }}>
-                Let's create an engaging offer for your customers. Our AI will help you
+                Let&apos;s create an engaging offer for your customers. Our AI will help you
                 choose the best type of offer based on your business performance.
               </Typography>
               <Button

@@ -4,17 +4,12 @@ import {
   Card,
   CardContent,
   Grid,
-  IconButton,
-  Menu,
-  MenuItem,
   Typography,
   Tabs,
   Tab,
   useTheme,
-  Button,
 } from '@mui/material';
 import { MerchantLayout } from '@/components/layout/MerchantLayout';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -34,13 +29,9 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RepeatIcon from '@mui/icons-material/Repeat';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import CommentIcon from '@mui/icons-material/Comment';
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -60,51 +51,27 @@ ChartJS.register(
 const timeRanges = ['Day', 'Week', 'Month', 'Year'] as const;
 type TimeRange = typeof timeRanges[number];
 
-const salesData = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  datasets: [
-    {
-      label: 'Sales',
-      data: [12000, 19000, 15000, 25000, 22000, 30000, 28000],
-      borderColor: '#7246DC',
-      backgroundColor: '#7246DC20',
-      fill: true,
-    },
-  ],
-};
+type MetricKey =
+  | 'Total Sales'
+  | 'Growth'
+  | 'Top-Selling Day'
+  | 'Page Views'
+  | 'Offer Metrics'
+  | 'User-Generated Content'
+  | 'Repeat Customers'
+  | 'Friend Visit Tracker';
 
-const customerData = {
-  labels: ['New', 'Returning', 'First Time'],
-  datasets: [
-    {
-      data: [30, 50, 20],
-      backgroundColor: ['#F388BF', '#7246DC', '#E6FF03'],
-    },
-  ],
-};
+interface MetricCardProps {
+  icon: React.ReactNode;
+  title: string;
+  value: string | number;
+  change?: string;
+  positive?: boolean;
+  color?: string;
+  onClick?: () => void;
+}
 
-const engagementData = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  datasets: [
-    {
-      label: 'Posts',
-      data: [5, 8, 12, 7, 9, 15, 11],
-      backgroundColor: '#F388BF',
-    },
-    {
-      label: 'Likes',
-      data: [120, 190, 150, 250, 220, 300, 280],
-      backgroundColor: '#7246DC',
-    },
-    {
-      label: 'Comments',
-      data: [20, 30, 25, 40, 35, 50, 45],
-      backgroundColor: '#E6FF03',
-    },
-  ],
-};
-
-const MetricCard = ({ icon, title, value, change, positive, color, onClick }: any) => (
+const MetricCard = ({ icon, title, value, change, positive, color, onClick }: MetricCardProps) => (
   <motion.div whileHover={{ scale: 1.02 }} onClick={onClick} style={{ cursor: 'pointer', height: '100%' }}>
     <Card 
       sx={{ 
@@ -268,19 +235,6 @@ const ugcData = {
     },
   ],
 };
-
-// Add MetricKey type for modal and metricCharts
-const metricKeys = [
-  'Total Sales',
-  'Growth',
-  'Top-Selling Day',
-  'Page Views',
-  'Offer Metrics',
-  'User-Generated Content',
-  'Repeat Customers',
-  'Friend Visit Tracker',
-] as const;
-type MetricKey = typeof metricKeys[number];
 
 const metricCharts: Record<MetricKey, React.ReactNode> = {
   'Total Sales': <Line data={salesTrendData} options={{ plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }} />,

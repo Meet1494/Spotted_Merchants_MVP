@@ -16,9 +16,6 @@ import {
   TableRow,
   TextField,
   Typography,
-  Tabs,
-  Tab,
-  useTheme,
 } from '@mui/material';
 import { MerchantLayout } from '@/components/layout/MerchantLayout';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -42,18 +39,6 @@ interface Transaction {
   postReach: number;
   status: 'settled_consumer' | 'on_hold' | 'settled_merchant';
 }
-
-const statusColors = {
-  settled_consumer: 'success',
-  on_hold: 'warning',
-  settled_merchant: 'info',
-} as const;
-
-const statusLabels = {
-  settled_consumer: '✅ Settled to consumer',
-  on_hold: '⚠️ On Hold',
-  settled_merchant: '📦 Settled to merchant',
-} as const;
 
 const statusChips = {
   settled_consumer: { label: 'Settled to consumer', color: 'success', icon: <CheckCircleIcon fontSize="small" /> },
@@ -144,7 +129,6 @@ function generateMockTransactions(): Transaction[] {
 const mockTransactions: Transaction[] = generateMockTransactions();
 
 const TransactionRow = ({ transaction }: { transaction: Transaction }) => {
-  const theme = useTheme();
   const netAmount = transaction.grossAmount - 
     (transaction.posted ? transaction.grossAmount * (transaction.cashbackPercent / 100) : 0) - 
     transaction.socialFee;
@@ -198,7 +182,7 @@ export default function Transactions() {
   const [searchTerm, setSearchTerm] = useState('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [statusFilter, setStatusFilter] = useState<Transaction['status'] | 'all'>('all');
-  const [tab, setTab] = useState(0); // 0: All, 1: Day, 2: Week, 3: Month
+  const [tab] = useState(0);
 
   // Filter by tab
   const filterByTab = (transaction: Transaction) => {

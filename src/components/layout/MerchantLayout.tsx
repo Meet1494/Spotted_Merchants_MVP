@@ -26,17 +26,6 @@ import { NAVIGATION_ROUTES } from '@/config/routes';
 import { useNavigation } from '@/hooks/useNavigation';
 import Image from 'next/image';
 
-const iconMap: { [key: string]: React.ReactNode } = {
-  HomeIcon: <HomeIcon />,
-  PersonIcon: <PersonIcon />,
-  FeedIcon: <FeedIcon />,
-  PaymentsIcon: <PaymentsIcon />,
-  CardGiftcardIcon: <CardGiftcardIcon />,
-  InsightsIcon: <InsightsIcon />,
-  NotificationsIcon: <NotificationsIcon />,
-  SettingsIcon: <SettingsIcon />,
-};
-
 interface MerchantLayoutProps {
   children: React.ReactNode;
 }

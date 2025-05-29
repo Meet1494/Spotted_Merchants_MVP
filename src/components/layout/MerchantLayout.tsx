@@ -13,14 +13,6 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
-import FeedIcon from '@mui/icons-material/Feed';
-import PaymentsIcon from '@mui/icons-material/Payments';
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
-import InsightsIcon from '@mui/icons-material/Insights';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { useRouter } from 'next/router';
 import { NAVIGATION_ROUTES } from '@/config/routes';
 import { useNavigation } from '@/hooks/useNavigation';

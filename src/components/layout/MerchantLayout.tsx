@@ -184,7 +184,8 @@ export const MerchantLayout: React.FC<MerchantLayoutProps> = ({ children }) => {
                     justifyContent: 'center',
                   }}
                 >
-                  {iconMap[route.icon]}
+                  {/* Render the icon if defined, otherwise fallback to a default icon or null */}
+                  {route.icon ? React.createElement(route.icon) : null}
                 </ListItemIcon>
                 {!collapsed && (
                   <ListItemText

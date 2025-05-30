@@ -27,10 +27,6 @@ export const NAVIGATION_ROUTES: Route[] = [
     label: 'Profile',
   },
   {
-    path: ROUTES.FEED,
-    label: 'Feed',
-  },
-  {
     path: ROUTES.TRANSACTIONS,
     label: 'Transactions',
   },

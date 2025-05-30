@@ -212,9 +212,34 @@ export default function Offers() {
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [autoShuffle, setAutoShuffle] = useState(false);
   const [newOffer, setNewOffer] = useState({
-    title: '',
-    description: '',
+    title: offerTypes[0].label,
+    description: offerTypes[0].description,
   });
+
+  // Track if user has manually edited title/description
+  const [titleEdited, setTitleEdited] = useState(false);
+  const [descEdited, setDescEdited] = useState(false);
+
+  // When dialog opens, reset fields to first offer type
+  const handleOpenDialog = () => {
+    setSelectedType(offerTypes[0].value as Offer['type']);
+    setNewOffer({ title: offerTypes[0].label, description: offerTypes[0].description });
+    setSelectedDays([]);
+    setAutoShuffle(false);
+    setTitleEdited(false);
+    setDescEdited(false);
+    setOpenDialog(true);
+  };
+
+  // When offer type changes, update title/desc if not edited
+  const handleTypeChange = (type: Offer['type']) => {
+    setSelectedType(type);
+    const found = offerTypes.find((t) => t.value === type);
+    setNewOffer((prev) => ({
+      title: titleEdited ? prev.title : found?.label || '',
+      description: descEdited ? prev.description : found?.description || '',
+    }));
+  };
 
   const handleCreateOffer = () => {
     const newOfferData: Offer = {
@@ -229,9 +254,11 @@ export default function Offers() {
 
     setOffers([...offers, newOfferData]);
     setOpenDialog(false);
-    setNewOffer({ title: '', description: '' });
+    setNewOffer({ title: offerTypes[0].label, description: offerTypes[0].description });
     setSelectedDays([]);
     setAutoShuffle(false);
+    setTitleEdited(false);
+    setDescEdited(false);
   };
 
   const handleDeleteOffer = (id: string) => {
@@ -256,7 +283,7 @@ export default function Offers() {
                 variant="contained"
                 color="primary"
                 startIcon={<AddIcon />}
-                onClick={() => setOpenDialog(true)}
+                onClick={handleOpenDialog}
                 sx={{ fontWeight: 700, borderRadius: 2, px: 3, py: 1.2, fontSize: 16, boxShadow: '0 2px 8px #7246DC22', width: { xs: '100%', sm: 'auto' } }}
               >
                 Create New Offer
@@ -289,7 +316,7 @@ export default function Offers() {
                 <FormLabel component="legend">Offer Type</FormLabel>
                 <RadioGroup
                   value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value as Offer['type'])}
+                  onChange={(e) => handleTypeChange(e.target.value as Offer['type'])}
                 >
                   {offerTypes.map((type) => (
                     <FormControlLabel
@@ -321,7 +348,7 @@ export default function Offers() {
                 fullWidth
                 label="Offer Title"
                 value={newOffer.title}
-                onChange={(e) => setNewOffer({ ...newOffer, title: e.target.value })}
+                onChange={(e) => { setNewOffer({ ...newOffer, title: e.target.value }); setTitleEdited(true); }}
                 sx={{ mb: 2, borderRadius: 2, background: '#fff' }}
               />
 
@@ -331,9 +358,7 @@ export default function Offers() {
                 multiline
                 rows={3}
                 value={newOffer.description}
-                onChange={(e) =>
-                  setNewOffer({ ...newOffer, description: e.target.value })
-                }
+                onChange={(e) => { setNewOffer({ ...newOffer, description: e.target.value }); setDescEdited(true); }}
                 sx={{ mb: 2, borderRadius: 2, background: '#fff' }}
               />
 

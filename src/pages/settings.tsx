@@ -79,6 +79,7 @@ const EnhancedSecuritySettings = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newMemberName, setNewMemberName] = useState('');
   const [newMemberRole, setNewMemberRole] = useState('View Only');
+  const [newMemberPhone, setNewMemberPhone] = useState('');
 
   const handlePinReset = () => {
     if (pin === confirmPin && pin.length === 4) {
@@ -248,6 +249,14 @@ const EnhancedSecuritySettings = () => {
             sx={{ mt: 1, mb: 2 }}
           />
           <TextField
+            label="Phone Number"
+            value={newMemberPhone}
+            onChange={e => setNewMemberPhone(e.target.value)}
+            fullWidth
+            sx={{ mb: 2 }}
+            type="tel"
+          />
+          <TextField
             label="Role"
             select
             value={newMemberRole}
@@ -263,23 +272,25 @@ const EnhancedSecuritySettings = () => {
           <Button onClick={() => setShowAddDialog(false)}>Cancel</Button>
           <Button
             onClick={() => {
-              if (!newMemberName.trim()) return;
+              if (!newMemberName.trim() || !newMemberPhone.trim()) return;
               setTeamMembers(prev => [
                 ...prev,
                 {
                   id: Date.now(),
                   name: newMemberName,
+                  phone: newMemberPhone,
                   role: newMemberRole,
                   avatar: `https://i.pravatar.cc/150?img=${Math.floor(Math.random()*70)+1}`,
                 },
               ]);
               setShowAddDialog(false);
               setNewMemberName('');
+              setNewMemberPhone('');
               setNewMemberRole('View Only');
             }}
             variant="contained"
             color="primary"
-            disabled={!newMemberName.trim()}
+            disabled={!newMemberName.trim() || !newMemberPhone.trim()}
           >
             Add
           </Button>

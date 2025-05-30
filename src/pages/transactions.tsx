@@ -20,6 +20,7 @@ import {
 import { MerchantLayout } from '@/components/layout/MerchantLayout';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
+import DownloadIcon from '@mui/icons-material/Download';
 import { motion } from 'framer-motion';
 import { format, isToday, isThisWeek, isThisMonth } from 'date-fns';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -27,6 +28,7 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import type { ChipProps } from '@mui/material/Chip';
 import type { ReactElement } from 'react';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 interface Transaction {
   id: string;
@@ -34,9 +36,9 @@ interface Transaction {
   customer: string;
   grossAmount: number;
   posted: boolean;
-  cashbackPercent: number;
+  AdvertisingFee: number;
   cashbackStatus: 'redeemed' | 'not_redeemed';
-  socialFee: number;
+  PlatformFee: number;
   store: string;
   postReach: number;
   status: 'settled_consumer' | 'on_hold' | 'settled_merchant';
@@ -57,13 +59,13 @@ function generateMockTransactions(): Transaction[] {
     // Today
     {
       id: 'TRX001',
-      date: new Date(),
+      date: new Date('2024-06-01T10:00:00Z'),
       customer: '****4321',
       grossAmount: 1250,
       posted: true,
-      cashbackPercent: 3,
+      AdvertisingFee: 1250 * 0.03, // 3% of grossAmount
       cashbackStatus: 'redeemed',
-      socialFee: 25,
+      PlatformFee: 1250 * 0.02, // 2% of grossAmount
       store: 'Main Branch',
       postReach: 234,
       status: 'settled_merchant',
@@ -71,13 +73,13 @@ function generateMockTransactions(): Transaction[] {
     // This week (not today)
     {
       id: 'TRX002',
-      date: new Date(new Date().setDate(new Date().getDate() - 2)),
+      date: new Date('2024-05-30T11:30:00Z'),
       customer: '****8765',
       grossAmount: 850,
       posted: false,
-      cashbackPercent: 0,
+      AdvertisingFee: 0, // Not posted
       cashbackStatus: 'not_redeemed',
-      socialFee: 0,
+      PlatformFee: 0, // Not posted
       store: 'Main Branch',
       postReach: 0,
       status: 'on_hold',
@@ -85,13 +87,13 @@ function generateMockTransactions(): Transaction[] {
     // This month (not this week)
     {
       id: 'TRX003',
-      date: new Date(new Date().setDate(new Date().getDate() - 10)),
+      date: new Date('2024-05-22T14:45:00Z'),
       customer: '****1234',
       grossAmount: 2100,
       posted: true,
-      cashbackPercent: 3,
+      AdvertisingFee: 2100 * 0.03, // 3% of grossAmount
       cashbackStatus: 'redeemed',
-      socialFee: 42,
+      PlatformFee: 2100 * 0.02, // 2% of grossAmount
       store: 'Downtown Branch',
       postReach: 567,
       status: 'settled_consumer',
@@ -101,16 +103,14 @@ function generateMockTransactions(): Transaction[] {
   const statusOptions: Transaction['status'][] = ['settled_consumer', 'on_hold', 'settled_merchant'];
   const cashbackStatusOptions: Transaction['cashbackStatus'][] = ['redeemed', 'not_redeemed'];
   for (let i = 4; i <= 100; i++) {
-    // Spread dates across the last 60 days
-    const daysAgo = i % 60;
-    const date = new Date();
-    date.setDate(date.getDate() - daysAgo);
-    date.setHours(10 + (i % 10), 30 + (i % 30));
+    // Use a fixed base date and increment by i days for determinism
+    const baseDate = new Date('2024-04-01T09:00:00Z');
+    const date = new Date(baseDate.getTime() + i * 24 * 60 * 60 * 1000 + (i % 10) * 60 * 60 * 1000 + (i % 30) * 60 * 1000);
     const grossAmount = 200 + (i * 37) % 3000;
     const posted = i % 5 !== 0;
-    const cashbackPercent = posted ? [2, 3, 4][i % 3] : 0;
+    const AdvertisingFee = posted ? grossAmount * 0.03 : 0;
     const cashbackStatus = posted ? cashbackStatusOptions[i % cashbackStatusOptions.length] : 'not_redeemed';
-    const socialFee = posted ? Math.floor(grossAmount * (0.01 + (i % 5) * 0.01)) : 0;
+    const PlatformFee = posted ? grossAmount * 0.02 : 0;
     const store = storeNames[i % storeNames.length];
     const postReach = posted ? (i * 13) % 1000 : 0;
     const status = statusOptions[i % statusOptions.length];
@@ -121,9 +121,9 @@ function generateMockTransactions(): Transaction[] {
       customer,
       grossAmount,
       posted,
-      cashbackPercent,
+      AdvertisingFee,
       cashbackStatus,
-      socialFee,
+      PlatformFee,
       store,
       postReach,
       status,
@@ -135,9 +135,10 @@ function generateMockTransactions(): Transaction[] {
 const mockTransactions: Transaction[] = generateMockTransactions();
 
 const TransactionRow = ({ transaction }: { transaction: Transaction }) => {
-  const netAmount = transaction.grossAmount - 
-    (transaction.posted ? transaction.grossAmount * (transaction.cashbackPercent / 100) : 0) - 
-    transaction.socialFee;
+  // Use precomputed values from transaction
+  const advertisingFee = transaction.AdvertisingFee;
+  const platformFee = transaction.PlatformFee;
+  const netAmount = transaction.grossAmount - advertisingFee - platformFee;
 
   return (
     <motion.tr
@@ -158,7 +159,7 @@ const TransactionRow = ({ transaction }: { transaction: Transaction }) => {
         />
       </TableCell>
       <TableCell>
-        {transaction.posted ? `${transaction.cashbackPercent}%` : '-'}
+        {transaction.posted ? '3%' : '-'}
       </TableCell>
       <TableCell>
         <Chip
@@ -167,7 +168,7 @@ const TransactionRow = ({ transaction }: { transaction: Transaction }) => {
           size="small"
         />
       </TableCell>
-      <TableCell>₹{transaction.socialFee.toFixed(2)}</TableCell>
+      <TableCell>₹{platformFee.toFixed(2)}</TableCell>
       <TableCell>{transaction.store}</TableCell>
       <TableCell>{transaction.postReach}</TableCell>
       <TableCell sx={{ fontWeight: 700 }}>₹{netAmount.toFixed(2)}</TableCell>
@@ -189,6 +190,11 @@ export default function Transactions() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [statusFilter, setStatusFilter] = useState<Transaction['status'] | 'all'>('all');
   const [tab] = useState(0);
+  const [storeFilter, setStoreFilter] = useState<string>('all');
+  const [storeAnchorEl, setStoreAnchorEl] = useState<null | HTMLElement>(null);
+
+  // Compute unique store names
+  const storeOptions = Array.from(new Set(mockTransactions.map(t => t.store)));
 
   // Filter by tab
   const filterByTab = (transaction: Transaction) => {
@@ -207,7 +213,8 @@ export default function Transactions() {
         transaction.store.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus = statusFilter === 'all' || transaction.status === statusFilter;
       const matchesTab = filterByTab(transaction);
-      return matchesSearch && matchesStatus && matchesTab;
+      const matchesStore = storeFilter === 'all' || transaction.store === storeFilter;
+      return matchesSearch && matchesStatus && matchesTab && matchesStore;
     })
     .sort((a, b) => b.date.getTime() - a.date.getTime());
 
@@ -225,6 +232,57 @@ export default function Transactions() {
   const handleFilterSelect = (status: Transaction['status'] | 'all') => {
     setStatusFilter(status);
     handleFilterClose();
+  };
+
+  const handleStoreMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setStoreAnchorEl(event.currentTarget);
+  };
+
+  const handleStoreMenuClose = () => {
+    setStoreAnchorEl(null);
+  };
+
+  const handleStoreFilterSelect = (store: string) => {
+    setStoreFilter(store);
+    handleStoreMenuClose();
+  };
+
+  // Download CSV handler
+  const handleDownloadCSV = () => {
+    const headers = [
+      'ID', 'Date', 'Customer', 'Gross', 'Posted', 'Advertising Fee', 'Cashback Status', 'Platform Fee', 'Store', 'Post Reach', 'Net', 'Status'
+    ];
+    const rows = filteredTransactions.map((transaction) => {
+      const advertisingFee = transaction.AdvertisingFee;
+      const platformFee = transaction.PlatformFee;
+      const netAmount = transaction.grossAmount - advertisingFee - platformFee;
+      return [
+        transaction.id,
+        format(transaction.date, 'yyyy-MM-dd HH:mm'),
+        transaction.customer,
+        transaction.grossAmount.toFixed(2),
+        transaction.posted ? 'Yes' : 'No',
+        transaction.posted ? '3%' : '-',
+        transaction.cashbackStatus === 'redeemed' ? 'Redeemed' : 'Not Redeemed',
+        platformFee.toFixed(2),
+        transaction.store,
+        transaction.postReach,
+        netAmount.toFixed(2),
+        statusChips[transaction.status].label,
+      ];
+    });
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'transactions_report.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -250,6 +308,9 @@ export default function Transactions() {
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ textAlign: { xs: 'left', sm: 'right' }, mt: { xs: 2, sm: 0 } }}>
+                  <IconButton onClick={handleDownloadCSV} sx={{ mr: 1 }}>
+                    <DownloadIcon />
+                  </IconButton>
                   <IconButton onClick={handleFilterClick}>
                     <FilterListIcon />
                   </IconButton>
@@ -287,10 +348,32 @@ export default function Transactions() {
                     <TableCell>Customer</TableCell>
                     <TableCell>Gross</TableCell>
                     <TableCell>Posted</TableCell>
-                    <TableCell>Cashback %</TableCell>
+                    <TableCell>Advertising Fee</TableCell>
                     <TableCell>Cashback Status</TableCell>
-                    <TableCell>Social Fee</TableCell>
-                    <TableCell>Store</TableCell>
+                    <TableCell>Platform Fee</TableCell>
+                    <TableCell>
+                      Store
+                      <IconButton
+                        size="small"
+                        onClick={handleStoreMenuOpen}
+                        sx={{ ml: 0.5, verticalAlign: 'middle' }}
+                        aria-label="Filter by store"
+                      >
+                        <ArrowDropDownIcon fontSize="small" />
+                      </IconButton>
+                      <Menu
+                        anchorEl={storeAnchorEl}
+                        open={Boolean(storeAnchorEl)}
+                        onClose={handleStoreMenuClose}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                      >
+                        <MenuItem selected={storeFilter === 'all'} onClick={() => handleStoreFilterSelect('all')}>All</MenuItem>
+                        {storeOptions.map(store => (
+                          <MenuItem key={store} selected={storeFilter === store} onClick={() => handleStoreFilterSelect(store)}>{store}</MenuItem>
+                        ))}
+                      </Menu>
+                    </TableCell>
                     <TableCell>Post Reach</TableCell>
                     <TableCell>Net</TableCell>
                     <TableCell>Status</TableCell>

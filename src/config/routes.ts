@@ -36,7 +36,7 @@ export const NAVIGATION_ROUTES: Route[] = [
   },
   {
     path: ROUTES.INSIGHTS,
-    label: 'Insights',
+    label: ' Sales Insights',
   },
   {
     path: ROUTES.ALERTS,

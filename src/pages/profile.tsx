@@ -233,26 +233,26 @@ export default function Profile() {
   const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem | null>(null);
   const [menuItems] = useState<MenuItem[]>([
     {
-      name: 'Chicken Tikka',
-      image: '/chicken-tikka.jpg',
-      description: 'A delicious chicken dish with a creamy sauce',
-      price: 150,
+      name: 'Pizza',
+      image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',
+      description: 'Classic cheese pizza with a crispy crust',
+      price: 220,
     },
     {
-      name: 'Butter Chicken',
-      image: '/butter-chicken.jpg',
-      description: 'A creamy and flavorful chicken dish',
-      price: 180,
+      name: 'Fries',
+      image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80',
+      description: 'Golden, crispy French fries',
+      price: 80,
     },
     {
       name: 'Vegetable Curry',
-      image: '/vegetable-curry.jpg',
+      image: 'https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80',
       description: 'A healthy and flavorful vegetable dish',
       price: 120,
     },
     {
       name: 'Rice',
-      image: '/rice.jpg',
+      image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80',
       description: 'A simple yet delicious rice dish',
       price: 50,
     },
